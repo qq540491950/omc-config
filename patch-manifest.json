@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "description": "Patch installed oh-my-claudecode runtime for better third-party model/proxy compatibility",
+  "targetValidation": {
+    "requiredAny": [
+      "scripts/pre-tool-enforcer.mjs",
+      "dist/features/delegation-enforcer.js",
+      "dist/agents/definitions.js",
+      "dist/hooks/autopilot/prompts.js"
+    ]
+  },
+  "rules": [
+    {
+      "id": "pre-tool-enforcer-thirdparty-guidance",
+      "path": "scripts/pre-tool-enforcer.mjs",
+      "kind": "replace_literal",
+      "description": "Relax deny guidance to prefer inherit/configured routing over hard failure wording"
+    },
+    {
+      "id": "delegation-enforcer-no-alias-normalize-on-nonstandard-provider",
+      "path": "dist/features/delegation-enforcer.js",
+      "kind": "replace_literal",
+      "description": "Avoid forcing provider-specific models into Claude tier aliases in delegation runtime"
+    },
+    {
+      "id": "agents-definitions-inherit-friendly-resolution",
+      "path": "dist/agents/definitions.js",
+      "kind": "replace_literal",
+      "description": "Prefer inherit/configured models over hardcoded tier aliases in agent registry"
+    },
+    {
+      "id": "autopilot-runtime-remove-explicit-tier-models",
+      "path": "dist/hooks/autopilot",
+      "kind": "bulk_regex",
+      "description": "Remove explicit model=haiku|sonnet|opus and tier-suffixed agent examples from autopilot runtime prompt builders"
+    },
+    {
+      "id": "team-stage-router-config-first",
+      "path": "dist/team/stage-router.js",
+      "kind": "replace_literal",
+      "description": "Keep team routing config-driven and avoid stronger Claude-default fallback than necessary"
+    },
+    {
+      "id": "team-model-contract-pass-through-provider-models",
+      "path": "dist/team/model-contract.js",
+      "kind": "replace_literal",
+      "description": "Preserve provider-specific Claude worker models where possible"
+    },
+    {
+      "id": "skills-remove-explicit-tier-models",
+      "path": "skills",
+      "kind": "bulk_regex",
+      "description": "Remove explicit model=haiku|sonnet|opus examples from skill docs that drive runtime behavior"
+    },
+    {
+      "id": "agents-frontmatter-inherit",
+      "path": "agents",
+      "kind": "bulk_regex",
+      "description": "Replace agent frontmatter model fields with inherit-friendly defaults"
+    }
+  ]
+}
